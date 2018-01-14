@@ -2,13 +2,21 @@ package Test;
 
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+import bienImmobilier.Contrat;
+import bienImmobilier.Piece;
+import bienImmobilier.Salon;
+import bienImmobilier.Vente;
 import database.ConnexionUnique;
+import database.DAOContrat;
+import database.DAOPiece;
 
 public class MainTest {
 	
 	public static void main(String[] args) throws SQLException {
-		Connection conn = null;
+		/*Connection conn = null;
 		
 		String req = "SELECT prix " +
 	            "FROM Contrat " +
@@ -39,7 +47,17 @@ public class MainTest {
 	            // Deconnexion de la base de donnees
 	            conn.close();
 	        }
-	    }
+	    }*/
+		
+		DAOPiece daoPiece = DAOPiece.getInstance();
+		List<Piece> pieces = new ArrayList<>();
+
+		pieces = daoPiece.findByNumBien(1);
+		
+		daoPiece.deleteByNumBien(1);
+		
+
+		
 	}
 	
 }
