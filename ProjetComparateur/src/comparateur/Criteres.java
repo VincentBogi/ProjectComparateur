@@ -2,22 +2,22 @@ package comparateur;
 
 public class Criteres {
 	// criteres principaux (éliminatoire)
-	String typeBien;
-	String typeContrat;
-	int typeTn;
-	int surfaceMin;
-	int SurfaceMax;
-	int prixMin;
-	int prixMax;
+	private String typeBien;
+	private String typeContrat;
+	private int typeTn;
+	private int surfaceMin;
+	private int SurfaceMax;
+	private int prixMin;
+	private int prixMax;
 	
 	//criteres de trie
-	int nbPieceInterieur;
-	String consoEnergie;
-	boolean balcon;
-	boolean jardin;
-	int nbChambre;
-	int localisation;
-	String parcking;
+	private int nbPieceInterieur;
+	private String consoEnergie;
+	private boolean balcon;
+	private boolean jardin;
+	private int nbChambre;
+	private int localisation;
+	private String parcking;
 	
 	public Criteres() {
 		

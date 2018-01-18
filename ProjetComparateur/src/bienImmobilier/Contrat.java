@@ -29,8 +29,8 @@ public abstract class Contrat {
 		this.prix = prix;
 	}
 	
-	public void display() {
-		System.out.println("reference : " + reference + " prix : " + prix + " " + getType());
+	public String toString() {
+		return "CONTRAT		reference : " + reference + " prix : " + prix + " " + getType() + "\n";
 	}
 	
 	public abstract String getType();

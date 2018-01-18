@@ -7,15 +7,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import bienImmobilier.Balcon;
+import bienImmobilier.Appartement;
 import bienImmobilier.Bien;
-import bienImmobilier.Chambre;
-import bienImmobilier.Garage;
-import bienImmobilier.Jardin;
+import bienImmobilier.Contrat;
+import bienImmobilier.Location;
+import bienImmobilier.Maison;
 import bienImmobilier.Piece;
-import bienImmobilier.SalleDeBain;
-import bienImmobilier.Salon;
-import bienImmobilier.Toilette;
+import bienImmobilier.Vente;
 import comparateur.Criteres;
 import constante.ConstanteVar;
 
@@ -46,8 +44,39 @@ public class DAOBien implements DAOBienInterface {
 		" AND surface<=" + criteres.getSurfaceMax() + " AND surface>=" + criteres.getSurfaceMin());
         
         List<Bien> biens = new ArrayList<Bien>();
-        while (rset.next()){
-            System.out.println();
+        Bien bien;
+        Contrat contrat;
+        Appartement apparte;
+        DAOPiece daoPiece = DAOPiece.getInstance();
+        while (rset.next()) { // construction d'un bien à chaque itération
+            System.out.println(rset.toString());
+            if(rset.getString(2).equals(ConstanteVar.BienTypeAppartement)) { // appartement
+            	apparte = new Appartement(rset.getInt(3));   ///TODO a voire si peut mieu faire avec le cour poo plus de généricité
+            	apparte.setBalcon(rset.getBoolean(13));
+            	bien = apparte;
+            }
+            else {	// maison
+            	bien = new Maison(rset.getInt(3));
+            }
+            bien.setPiece(daoPiece.findByNumBien(rset.getInt(1)));
+            bien.setNumBien(rset.getInt(1));
+            bien.setLocalisation(rset.getInt(4));
+            bien.setNbPiece(rset.getInt(5));
+            bien.setConsoEnergie(rset.getString(6));
+            bien.setJardin(rset.getBoolean(7));
+            bien.setNbChambre(rset.getInt(8));
+            bien.setTypeTn(rset.getInt(9));
+            bien.setParking(rset.getString(11));
+            bien.setText(rset.getString(12)); 
+            
+            if(rset.getString(16).equals(ConstanteVar.contratTypeLocation)) {
+            	contrat = new Location(rset.getInt(14), rset.getInt(15));
+            }
+            else {
+            	contrat = new Vente(rset.getInt(14), rset.getInt(15));
+            }
+            bien.setContrat(contrat);
+            biens.add(bien);
         }
         stmt.close();
         
@@ -56,20 +85,83 @@ public class DAOBien implements DAOBienInterface {
 
 	@Override
 	public boolean insert(Bien bien) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		Statement stmt = connection.createStatement();
+		boolean isBalcon = false;
+		
+		if(bien.getType().equals(ConstanteVar.BienTypeAppartement)) {
+			Appartement apparte = (Appartement)bien;
+			isBalcon = apparte.isBalcon();
+		}
+		
+		DAOContrat daoContrat = DAOContrat.getInstance();
+		if(daoContrat.insert(bien.getContrat())) {	// si l'ajout du contrat dans la BD réussi car possible seulement si le contrat est créé
+			int resContrat = stmt.executeUpdate("INSERT INTO Bien (typeBien,  surface, localisation, nbPiece, consoEnergie, jardin, nbChambre, typeTn, reference, parking, text, balcon) VALUES "
+					+ "('" + bien.getType()+ "', " + bien.getSurface() + ", " + bien.getLocalisation() + ", " + bien.getNbPiece() + ", '" + bien.getConsoEnergie() + "', " 
+					+ bien.isJardin() + ", " + bien.getNbChambre() + ", " + bien.getTypeTn() + ", " + bien.getContrat().getReference() + ", '" + bien.getParking() + "', '" 
+					+ bien.getText() + "', " + isBalcon +  ")");
+			stmt.close();
+			
+			if(resContrat == 1) {	// si L'ajout du bien dans la BD a réussit
+				isSuccess = true;
+				
+				DAOPiece daoPiece = DAOPiece.getInstance();  // ajout des piece du bien dans la BD
+				for(Piece piece : bien.getPiece()) {
+					isSuccess = isSuccess & daoPiece.insert(piece, bien.getNumBien());
+				}
+			}
+		}
+
+        return isSuccess;
 	}
 
 	@Override
 	public boolean delete(Bien bien) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		Statement stmt = connection.createStatement();		
+		boolean isBalcon = false;
+		
+		if(bien.getType().equals(ConstanteVar.BienTypeAppartement)) {
+			Appartement apparte = (Appartement)bien;
+			isBalcon = apparte.isBalcon();
+		}
+		
+		DAOContrat daoContrat = DAOContrat.getInstance();
+		DAOPiece daoPiece = DAOPiece.getInstance();
+		
+		if (daoPiece.deleteByNumBien(bien.getNumBien()) && daoContrat.delete(bien.getContrat())) {
+            isSuccess = true;
+		}
+		stmt.close();
+		
+		return isSuccess;
 	}
 
 	@Override
 	public boolean update(Bien bien) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean isSuccess = false;
+		Statement stmt = connection.createStatement();
+		
+		int rsetModule = stmt.executeUpdate("UPDATE Bien SET typeBien='" + bien.getType() + "', surface=" + bien.getSurface()
+		+ ", localisation=" + bien.getLocalisation() + ", nbPiece=" + bien.getNbPiece() + ", consoEnergie='" + bien.getConsoEnergie()
+		+ "', jardin=" + bien.isJardin() + ", nbChambre=" + bien.getNbChambre() + ", typeTn=" + bien.getTypeTn()  + ", parking='" 
+		+ bien.getParking() + "', text='" + bien.getText() + "' WHERE reference = " + bien.getContrat().getReference() );
+		
+		stmt.close();
+		
+		DAOContrat daoContrat = DAOContrat.getInstance();
+		DAOPiece daoPiece = DAOPiece.getInstance();
+		List<Piece> pieces = bien.getPiece();
+		if (rsetModule >= 1) { // si update bien reussi 
+			if(daoContrat.update(bien.getContrat())) { //si update contrat reussi
+				isSuccess = true;
+				for(Piece piece : pieces) {
+					isSuccess = isSuccess && daoPiece.update(piece);
+				}
+			}
+		}
+		
+		return isSuccess;
 	}
 
 }

@@ -6,11 +6,11 @@ import java.util.List;
 import bienImmobilier.Bien;
 
 public class Comparateur {
-	Criteres critere;
-	List<Bien> biens;
+	private Criteres criteres;
+	private List<Bien> biens;
 	
 	public Comparateur(Criteres criteres) {
-		this.critere = criteres;
+		this.criteres = criteres;
 		biens = new ArrayList<Bien>();
 	}
 }

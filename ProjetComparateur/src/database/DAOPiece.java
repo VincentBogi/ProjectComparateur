@@ -79,6 +79,7 @@ public class DAOPiece implements DAOPieceInterface {
             }
             pieces.add(piece);
         }
+        
         stmt.close();
         
         return pieces;
@@ -94,6 +95,7 @@ public class DAOPiece implements DAOPieceInterface {
 		if (resContrat == 1) {
             isSuccess = true;
 		}
+		
 
         return isSuccess;
 	}
@@ -108,6 +110,7 @@ public class DAOPiece implements DAOPieceInterface {
 		if (rsetModule >= 1) {
             isSuccess = true;
 		}
+		stmt.close();
 		
 		return isSuccess;
 	}
@@ -122,6 +125,7 @@ public class DAOPiece implements DAOPieceInterface {
 		if (rsetModule >= 1) {
             isSuccess = true;
 		}
+		stmt.close();
 		
 		return isSuccess;
 	}
@@ -137,6 +141,7 @@ public class DAOPiece implements DAOPieceInterface {
 		if (rsetModule >= 1) {
             isSuccess = true;
 		}
+		stmt.close();
 		
 		return isSuccess;
 	}

@@ -1,8 +1,8 @@
 package bienImmobilier;
 
 public abstract class Piece {
-	int surface;
-	int numPiece;
+	private int surface;
+	private int numPiece;
 	
 	public Piece(int surface) {
 		this.surface = surface;
@@ -25,8 +25,8 @@ public abstract class Piece {
 	
 	public abstract String getType();
 	
-	public void Display() {
-		System.out.println("piece de " + surface + "m carré, fonction : " + getFonction() + ", type : " + getType());
+	public String toString() {
+		return "piece de " + surface + "m carré, fonction : " + getFonction() + ", type : " + getType() + "\n";
 	}
 
 	public int getNumPiece() {

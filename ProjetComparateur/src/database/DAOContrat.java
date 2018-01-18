@@ -73,6 +73,7 @@ public class DAOContrat implements DAOContratInterface {
 		if (rsetModule >= 1) {
             isSuccess = true;
 		}
+		stmt.close();
 		
 		return isSuccess;
 	}
@@ -87,6 +88,7 @@ public class DAOContrat implements DAOContratInterface {
 		if (rsetModule >= 1) {
             isSuccess = true;
 		}
+		stmt.close();
 		
 		return isSuccess;
 	}
