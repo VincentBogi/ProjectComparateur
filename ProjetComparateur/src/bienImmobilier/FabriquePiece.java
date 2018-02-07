@@ -11,7 +11,7 @@ public class FabriquePiece {
 	public Piece creerPiece(String fonction, int surface, Bien bien) {
 		Piece piece;
 		
-		if(fonction.equals(ConstanteVar.pieceFonctionBalcon) && bien.getType().equals(ConstanteVar.BienTypeAppartement)) { // balcon si appartement
+		if(fonction.equals(ConstanteVar.pieceFonctionBalcon) && bien.getType().equals(ConstanteVar.bienTypeAppartement)) { // balcon si appartement
         	piece = new Balcon(surface);
         }
         else if(fonction.equals(ConstanteVar.pieceFonctionChambre)) { // Chambre

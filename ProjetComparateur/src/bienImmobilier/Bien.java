@@ -1,8 +1,10 @@
 package bienImmobilier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import comparateur.Criteres;
 import constante.ConstanteVar;
 
 public abstract class Bien {
@@ -15,24 +17,26 @@ public abstract class Bien {
 	private boolean jardin;
 	private int nbChambre;
 	private int typeTn;
-	private String Parking;
+	private String parking;
 	private String text;
 	
 	private Contrat contrat;
 	private List<Piece> pieces;
+	private int valeurDeProximite;
 	
 	public Bien(int surface) {
 		fabriquePiece = new FabriquePiece();
 		this.surface = surface;
 		localisation = 0;
 		nbPiece = 0;
-		consoEnergie = "";
+		consoEnergie = null;
 		jardin = false;
 		nbChambre = 0;
 		typeTn = 0;
-		Parking = "";
-		text = "";
+		parking = null;
+		text = null;
 		pieces = new ArrayList<Piece>();
+		valeurDeProximite = 0;
 	}
 	
 	public boolean AddPiece(String fonction, int surface) {
@@ -55,6 +59,83 @@ public abstract class Bien {
 		}
 		
 		return res;
+	}
+	
+	public void evaluerValeurDeProximiter(Criteres criteres, HashMap<Integer, List<Integer>> hashLocation) {
+		int i = 0;
+		i = i + evaluerNbDePiece(criteres.getNbPieceInterieur());
+		i = i + evaluerNbChambre(criteres.getNbChambre());
+		i = i + evaluerLocalisation(criteres.getLocalisation(), hashLocation);
+		i = i + evaluerParking(criteres.getParcking());
+		i = i + evaluerConsoEnergie(criteres.getConsoEnergie());
+		if(criteres.isJardin()) {
+			i = i + evaluerJardin(criteres.isJardin());
+		}
+		
+		valeurDeProximite = i;
+	}
+	
+	public int evaluerNbDePiece(int critereNbPiece) {
+		int i = 0;
+		
+		if(nbPiece == critereNbPiece) { // si nb de piece respecté
+			i = 2;
+		}
+		else if ((nbPiece + 1) == critereNbPiece) { // si nombre 
+			i = 1;
+		}
+		
+		return i;
+	}
+	
+	public int evaluerNbChambre(int critereNbChambre) {
+		int i = 0;
+		if(nbChambre == critereNbChambre) {
+			i = 3;
+		}
+		else if((nbChambre + 1) == critereNbChambre) {
+			i = 1;
+		}
+		
+		return i;
+	}
+	
+	public int evaluerLocalisation(int critereLocalisation, HashMap<Integer, List<Integer>> hashLocalisation) {
+		int res = 0;
+		if(critereLocalisation == localisation) {
+			res = 5;
+		}
+		else if(hashLocalisation.get(critereLocalisation).contains(localisation))
+		{
+			res = 2;
+		}
+		
+		return res;	
+	}
+	
+	public int evaluerParking(String critereParking) {
+		int valueBien = ConstanteVar.hashMapParking.get(parking);
+		int valueCritere = ConstanteVar.hashMapParking.get(critereParking);
+		int res = 0;
+		
+		if(valueCritere >= valueBien) {
+			res = 2;
+		}
+		else if(valueCritere == valueBien - 1) {
+			res = 1;
+		}
+		
+		return res;
+	}
+	
+	public int evaluerConsoEnergie(String critereConsoEnergie) {
+		//TODO
+		return 0;
+	}
+	
+	public int evaluerJardin(boolean critereJardin) {
+		//TODO
+		return 0;
 	}
 	
 	public abstract void VerifAjoutSpecifique(Piece piece) ;
@@ -126,11 +207,18 @@ public abstract class Bien {
 	}
 
 	public String getParking() {
-		return Parking;
+		return parking;
+	}
+	
+	
+
+	public int getValeurDeProximite() {
+		return valeurDeProximite;
 	}
 
+
 	public void setParking(String parking) {
-		Parking = parking;
+		this.parking = parking;
 	}
 
 	public String getText() {
@@ -164,6 +252,7 @@ public abstract class Bien {
 	public String toString() {
 		return "BIEN		NumBien : " + numBien + " ,Type : " + getType() + ", Surface : " + surface +" ,Localisation : "
 				+ localisation + " ,NbPiece : " + nbPiece +" ,ConsoEnergie : " + consoEnergie + " ,Jardin : " + jardin + " ,NbChambre : "
-				+ nbChambre + " ,TypeTn : " + typeTn + " ,Parking :" + Parking + "\n" + contrat.toString();
+				+ nbChambre + " ,TypeTn : " + typeTn + " ,Parking :" + parking + " ,Valeur de porcimiter : " + valeurDeProximite + 
+				"\n" + "valeur proximité : " + valeurDeProximite + "\n"+ contrat.toString();
 	}
 }

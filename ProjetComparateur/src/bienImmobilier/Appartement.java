@@ -12,7 +12,7 @@ public class Appartement extends Bien {
 	
 	@Override
 	public String getType() {
-		return ConstanteVar.BienTypeAppartement;
+		return ConstanteVar.bienTypeAppartement;
 	}
 
 	@Override

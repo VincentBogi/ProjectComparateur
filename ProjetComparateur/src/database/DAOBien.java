@@ -49,8 +49,7 @@ public class DAOBien implements DAOBienInterface {
         Appartement apparte;
         DAOPiece daoPiece = DAOPiece.getInstance();
         while (rset.next()) { // construction d'un bien à chaque itération
-            System.out.println(rset.toString());
-            if(rset.getString(2).equals(ConstanteVar.BienTypeAppartement)) { // appartement
+            if(rset.getString(2).equals(ConstanteVar.bienTypeAppartement)) { // appartement
             	apparte = new Appartement(rset.getInt(3));   ///TODO a voire si peut mieu faire avec le cour poo plus de généricité
             	apparte.setBalcon(rset.getBoolean(13));
             	bien = apparte;
@@ -89,7 +88,7 @@ public class DAOBien implements DAOBienInterface {
 		Statement stmt = connection.createStatement();
 		boolean isBalcon = false;
 		
-		if(bien.getType().equals(ConstanteVar.BienTypeAppartement)) {
+		if(bien.getType().equals(ConstanteVar.bienTypeAppartement)) {
 			Appartement apparte = (Appartement)bien;
 			isBalcon = apparte.isBalcon();
 		}
@@ -121,7 +120,7 @@ public class DAOBien implements DAOBienInterface {
 		Statement stmt = connection.createStatement();		
 		boolean isBalcon = false;
 		
-		if(bien.getType().equals(ConstanteVar.BienTypeAppartement)) {
+		if(bien.getType().equals(ConstanteVar.bienTypeAppartement)) {
 			Appartement apparte = (Appartement)bien;
 			isBalcon = apparte.isBalcon();
 		}

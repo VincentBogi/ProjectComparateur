@@ -5,6 +5,8 @@ public class Criteres {
 	private String typeBien;
 	private String typeContrat;
 	private int typeTn;
+	private int surfaceMinJardin;
+	private int surfaceMaxJardin;
 	private int surfaceMin;
 	private int SurfaceMax;
 	private int prixMin;
@@ -107,8 +109,12 @@ public class Criteres {
 		return jardin;
 	}
 
-	public void setJardin(boolean jardin) {
+	public void setJardin(boolean jardin, int surfaceMin, int surfaceMax) {
 		this.jardin = jardin;
+		if(jardin) {
+			this.surfaceMinJardin = surfaceMin;
+			this.surfaceMaxJardin = surfaceMax;
+		}
 	}
 
 	public int getNbChambre() {
@@ -134,7 +140,6 @@ public class Criteres {
 	public void setParcking(String parcking) {
 		this.parcking = parcking;
 	}
-	
 	
 	
 }

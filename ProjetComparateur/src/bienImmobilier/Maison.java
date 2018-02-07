@@ -10,7 +10,7 @@ public class Maison extends Bien {
 	
 	@Override
 	public String getType() {
-		return ConstanteVar.BienTypeMaison;
+		return ConstanteVar.bienTypeMaison;
 	}
 
 	@Override
