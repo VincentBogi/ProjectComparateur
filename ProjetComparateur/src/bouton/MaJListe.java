@@ -7,4 +7,8 @@ public class MaJListe extends JComboBox<String> {
 	public MaJListe(String[] str) {
 		super(str);
 	}
+	
+	public void initListPiece() {
+		
+	}
 }

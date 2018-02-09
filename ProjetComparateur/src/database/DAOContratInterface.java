@@ -10,4 +10,5 @@ public interface DAOContratInterface {
     public boolean insert(Contrat contrat) throws SQLException;
     public boolean delete(Contrat contrat) throws SQLException;
     public boolean update(Contrat contrat) throws SQLException;
+    public int getNumContratDispo() throws SQLException;
 }

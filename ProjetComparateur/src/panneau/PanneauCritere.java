@@ -1,5 +1,7 @@
 package panneau;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -17,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
 
@@ -72,13 +75,18 @@ public class PanneauCritere extends JPanel{
 	
 	MonBouton boutonLancer;
 	
+	MonBouton boutonAjoutApparte; // pour casUtilisation 2
+	MonBouton boutonAjoutMaison; // pour casUtilisation 2
+	
 	ButtonGroup bg;
+	int casUtilisation; // 1 pour recherche 2 pour modif
 	
 	
-	public PanneauCritere(MaFenetre maFenetre) {
+	public PanneauCritere(MaFenetre maFenetre, int casUtilisation) {
 		super();	
 		setBackground(ConstanteColor.colorBackground);
 		this.maFenetre = maFenetre;
+		this.casUtilisation = casUtilisation;
 		
 		// format pour les JFormattedTextField
 		NumberFormat longFormat = NumberFormat.getIntegerInstance();
@@ -128,46 +136,90 @@ public class PanneauCritere extends JPanel{
 	
 		//initilisation et instenciation du bouton de recherche
 		boutonLancer = new MonBouton("Lancer Recherche");
-		boutonLancer.addActionListener(new ActionListener() {		
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				/*Criteres criteres = new Criteres();
-				criteres.setSurfaceMax(Integer.parseInt(surfaceMaxJT.getValue().toString()));
-				criteres.setSurfaceMin(Integer.parseInt(surfaceMinJT.getValue().toString()));
-				criteres.setPrixMax(Integer.parseInt(prixMaxJT.getValue().toString()));
-				criteres.setPrixMin(Integer.parseInt(prixMinJT.getValue().toString()));
-				criteres.setTypeContrat(achatOuLocationJL.getSelectedItem().toString());
-				criteres.setTypeBien(apartementOuMaisonJL.getSelectedItem().toString());
-				criteres.setTypeTn(Integer.parseInt(tnJT.getValue().toString()));
-				criteres.setConsoEnergie(consoEnergieJL.getSelectedItem().toString());
-				if(jardinNonJRB.isSelected()) {
-					criteres.setJardin(false, 0, 0);
+		if(casUtilisation == 1) {	// recherche
+			boutonLancer.addActionListener(new ActionListener() {		
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Criteres criteres = new Criteres();
+					criteres.setSurfaceMax(Integer.parseInt(surfaceMaxJT.getValue().toString()));
+					criteres.setSurfaceMin(Integer.parseInt(surfaceMinJT.getValue().toString()));
+					criteres.setPrixMax(Integer.parseInt(prixMaxJT.getValue().toString()));
+					criteres.setPrixMin(Integer.parseInt(prixMinJT.getValue().toString()));
+					criteres.setTypeContrat(achatOuLocationJL.getSelectedItem().toString());
+					criteres.setTypeBien(apartementOuMaisonJL.getSelectedItem().toString());
+					criteres.setTypeTn(Integer.parseInt(tnJT.getValue().toString()));
+					criteres.setConsoEnergie(consoEnergieJL.getSelectedItem().toString());
+					if(jardinNonJRB.isSelected()) {
+						criteres.setJardin(false, 0, 0);
+					}
+					else {
+						criteres.setJardin(true, Integer.parseInt(surfaceMinJardinJT.getValue().toString()), Integer.parseInt(surfaceMaxJardinJT.getValue().toString()));
+					}
+					criteres.setLocalisation(Integer.parseInt(localisationJT.getValue().toString()));
+					criteres.setNbChambre(Integer.parseInt(nombreChambreJT.getValue().toString()));
+					criteres.setNbPieceInterieur(Integer.parseInt(pieceInterieurJT.getValue().toString()));
+					criteres.setParcking(parkingJL.getSelectedItem().toString());
+					
+					
+					maFenetre.setComparateur(new Comparateur(criteres));
+					try {
+						maFenetre.getComparateur().comparer();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//maFenetre.remove(maFenetre.getPanneauActif());
+					PanneauListBien panneau = new PanneauListBien(maFenetre);
+					panneau.initPanneauListBien();
+					maFenetre.setPanneauActif(panneau);
+					
+					
 				}
-				else {
-					criteres.setJardin(true, Integer.parseInt(surfaceMinJardinJT.getValue().toString()), Integer.parseInt(surfaceMaxJardinJT.getValue().toString()));
+			});
+		}
+		else if(casUtilisation == 2) { // modif
+			boutonLancer.addActionListener(new ActionListener() {		
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Criteres criteres = new Criteres();
+					criteres.setSurfaceMax(Integer.parseInt(surfaceMaxJT.getValue().toString()));
+					criteres.setSurfaceMin(Integer.parseInt(surfaceMinJT.getValue().toString()));
+					criteres.setPrixMax(Integer.parseInt(prixMaxJT.getValue().toString()));
+					criteres.setPrixMin(Integer.parseInt(prixMinJT.getValue().toString()));
+					criteres.setTypeContrat(achatOuLocationJL.getSelectedItem().toString());
+					criteres.setTypeBien(apartementOuMaisonJL.getSelectedItem().toString());
+					criteres.setTypeTn(Integer.parseInt(tnJT.getValue().toString()));
+					criteres.setConsoEnergie(consoEnergieJL.getSelectedItem().toString());
+					if(jardinNonJRB.isSelected()) {
+						criteres.setJardin(false, 0, 0);
+					}
+					else {
+						criteres.setJardin(true, Integer.parseInt(surfaceMinJardinJT.getValue().toString()), Integer.parseInt(surfaceMaxJardinJT.getValue().toString()));
+					}
+					criteres.setLocalisation(Integer.parseInt(localisationJT.getValue().toString()));
+					criteres.setNbChambre(Integer.parseInt(nombreChambreJT.getValue().toString()));
+					criteres.setNbPieceInterieur(Integer.parseInt(pieceInterieurJT.getValue().toString()));
+					criteres.setParcking(parkingJL.getSelectedItem().toString());
+					
+					
+					maFenetre.setComparateur(new Comparateur(criteres));
+					try {
+						maFenetre.getComparateur().comparer();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//maFenetre.remove(maFenetre.getPanneauActif());
+					PanneauListBienModif panneau = new PanneauListBienModif(maFenetre);
+					panneau.initPanneauListBienModif();
+					maFenetre.setPanneauActif(panneau);
+					
+					
 				}
-				criteres.setLocalisation(Integer.parseInt(localisationJT.getValue().toString()));
-				criteres.setNbChambre(Integer.parseInt(nombreChambreJT.getValue().toString()));
-				criteres.setNbPieceInterieur(Integer.parseInt(pieceInterieurJT.getValue().toString()));
-				criteres.setParcking(parkingJL.getSelectedItem().toString());
-				
-				
-				maFenetre.setComparateur(new Comparateur(criteres));
-				try {
-					maFenetre.getComparateur().comparer();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
-				
-				maFenetre.remove(maFenetre.getPanneauActif());
-				PanneauListBien panneau = new PanneauListBien(maFenetre);
-				panneau.initPanneauListBien();
-				maFenetre.setPanneauActif(panneau);
-				
-				
-			}
-		});
+			});
+		}
 		
 		jardinNonJRB.setBackground(ConstanteColor.colorBackground);
 		jardinNonJRB.setForeground(ConstanteColor.colorFontText);
@@ -475,7 +527,56 @@ public class PanneauCritere extends JPanel{
 		c.gridx = 0;
 		c.gridy = 16;
 		c.gridwidth = GridBagConstraints.REMAINDER;
-		add(boutonLancer, c);		
+		add(boutonLancer, c);	
+		
+		if(casUtilisation == 2) {
+			boutonAjoutMaison = new MonBouton("Ajouter Maison");
+			boutonAjoutMaison.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					PanneauAjoutBien panneau = new PanneauAjoutBien(maFenetre, 1);
+					panneau.initPanneauAjoutBien();
+					maFenetre.setPanneauActif(panneau);
+					
+				}
+			});
+			
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = new Insets(20,0,0,0);
+			c.weightx = 0;
+			c.ipady = 20;
+			c.ipadx = 60;
+			c.weighty = 0;
+			c.gridx = 0;
+			c.gridy = 17;
+			c.gridwidth = 1;
+			add(boutonAjoutMaison, c);	
+			
+			boutonAjoutApparte = new MonBouton("Ajouter Appartement");
+			boutonAjoutApparte.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					PanneauAjoutBien panneau = new PanneauAjoutBien(maFenetre, 2);
+					panneau.initPanneauAjoutBien();
+					maFenetre.setPanneauActif(panneau);
+				}
+			});
+			
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = new Insets(20,0,0,0);
+			c.weightx = 0;
+			c.ipady = 20;
+			c.ipadx = 60;
+			c.weighty = 0;
+			c.gridx = 1;
+			c.gridy = 17;
+			c.gridwidth = 1;
+			add(boutonAjoutApparte, c);	
+			
+			
+		}
 		
 	}
 	

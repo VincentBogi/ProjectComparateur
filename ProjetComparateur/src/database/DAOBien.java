@@ -147,20 +147,38 @@ public class DAOBien implements DAOBienInterface {
 		+ bien.getParking() + "', text='" + bien.getText() + "' WHERE reference = " + bien.getContrat().getReference() );
 		
 		stmt.close();
+
 		
 		DAOContrat daoContrat = DAOContrat.getInstance();
 		DAOPiece daoPiece = DAOPiece.getInstance();
 		List<Piece> pieces = bien.getPiece();
-		if (rsetModule >= 1) { // si update bien reussi 
-			if(daoContrat.update(bien.getContrat())) { //si update contrat reussi
-				isSuccess = true;
-				for(Piece piece : pieces) {
-					isSuccess = isSuccess && daoPiece.update(piece);
-				}
+		
+		daoContrat.update(bien.getContrat());
+		
+		isSuccess = true;
+		for(Piece piece : pieces) {
+			if(piece.getNumPiece() >= 0) {
+				isSuccess = isSuccess && daoPiece.update(piece);
+			}
+			else {
+				isSuccess = isSuccess && daoPiece.insertWitheNumPiece(piece, bien.getNumBien());
 			}
 		}
+
+		
 		
 		return isSuccess;
+	}
+	
+	public int getNumBienDispo() throws SQLException {
+		int numBien = -1;
+		Statement stmt = connection.createStatement();
+		ResultSet rset = stmt.executeQuery("SELECT MAX( numBien ) FROM  Bien " );
+		rset.first();
+		numBien = rset.getInt(1);
+		stmt.close();
+		
+		return numBien + 1;
 	}
 
 }

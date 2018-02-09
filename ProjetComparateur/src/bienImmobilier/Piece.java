@@ -6,6 +6,7 @@ public abstract class Piece {
 	
 	public Piece(int surface) {
 		this.surface = surface;
+		numPiece = -1;
 	}
 	
 	public Piece(int surface, int numPiece) {

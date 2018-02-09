@@ -50,7 +50,7 @@ public class DAOPiece implements DAOPieceInterface {
         int surface;
         int numPiece;
         while (rset.next()){
-            type = rset.getString(4);
+            type = rset.getString(3);
             surface = rset.getInt(2);
             numPiece = rset.getInt(1);
             if(type.equals(ConstanteVar.pieceFonctionBalcon)) { // balcon
@@ -90,6 +90,25 @@ public class DAOPiece implements DAOPieceInterface {
 		boolean isSuccess = false;
 		Statement stmt = connection.createStatement();
 		int resContrat = stmt.executeUpdate("INSERT INTO Piece (surface, fonction, type, numBien) VALUES (" + piece.getSurface() + ", '" + piece.getFonction() + "', '" + piece.getType() + "', " + numBien + ")");
+		stmt.close();
+		
+		if (resContrat == 1) {
+            isSuccess = true;
+		}
+		
+
+        return isSuccess;
+	}
+	
+	public boolean insertWitheNumPiece(Piece piece, int numBien) throws SQLException {
+		
+		if(piece.getNumPiece() == -1) {
+			piece.setNumPiece(getNumPieceDispo());
+		}
+		
+		boolean isSuccess = false;
+		Statement stmt = connection.createStatement();
+		int resContrat = stmt.executeUpdate("INSERT INTO Piece (numPiece, surface, fonction, type, numBien) VALUES (" + piece.getNumPiece() + ", " + piece.getSurface() + ", '" + piece.getFonction() + "', '" + piece.getType() + "', " + numBien + ")");
 		stmt.close();
 		
 		if (resContrat == 1) {
@@ -144,5 +163,18 @@ public class DAOPiece implements DAOPieceInterface {
 		stmt.close();
 		
 		return isSuccess;
+	}
+
+	@Override
+	public int getNumPieceDispo() throws SQLException {
+		int numPiece = 0 ; 
+		Statement stmt = connection.createStatement();
+		ResultSet rset = stmt.executeQuery("SELECT MAX( numPiece ) FROM  Piece " );
+		
+		rset.first();
+		numPiece = rset.getInt(1);
+		stmt.close();
+		
+		return numPiece + 1;
 	}
 }

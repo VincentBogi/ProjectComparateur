@@ -12,4 +12,5 @@ public interface DAOBienInterface {
     public boolean insert(Bien bien) throws SQLException;
     public boolean delete(Bien bien) throws SQLException;
     public boolean update(Bien bien) throws SQLException;
+    public int getNumBienDispo() throws SQLException;
 }

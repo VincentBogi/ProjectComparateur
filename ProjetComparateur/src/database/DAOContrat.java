@@ -93,4 +93,16 @@ public class DAOContrat implements DAOContratInterface {
 		return isSuccess;
 	}
 
+	@Override
+	public int getNumContratDispo() throws SQLException {
+		int reference = -1;
+		Statement stmt = connection.createStatement();
+		ResultSet rset = stmt.executeQuery("SELECT MAX( reference ) FROM  Contrat " );
+		rset.first();
+		reference = rset.getInt(1);
+		stmt.close();
+		
+		return reference + 1;
+	}
+
 }

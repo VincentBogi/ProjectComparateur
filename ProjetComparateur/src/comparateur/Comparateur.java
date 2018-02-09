@@ -8,12 +8,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import bienImmobilier.Bien;
+import bienImmobilier.Piece;
 import constante.ConstanteVar;
 import database.DAOBien;
+import database.DAOContrat;
+import database.DAOPiece;
 
 public class Comparateur {
 	private Criteres criteres;
 	private List<Bien> biens;
+
 	
 	public Comparateur(Criteres criteres) {
 		this.criteres = criteres;
@@ -22,8 +26,9 @@ public class Comparateur {
 	
 	public void comparer() throws SQLException {
 		DAOBien daoBien = DAOBien.getInstance();
-		biens = daoBien.findByCriteres(criteres);
+		biens = daoBien.findByCriteres(criteres); // 1ere selection
 		
+		// 2ème étape de selection
 		for(Bien bien : biens) {
 			bien.evaluerValeurDeProximiter(criteres, ConstanteVar.hashMapLocalisation);
 		}
@@ -43,6 +48,7 @@ public class Comparateur {
 			}
 		});
 		
+		//recuperation des 10 premiers si >
 		if(biens.size() > 10) {
 			biens = biens.subList(0, 10);
 		}
@@ -58,6 +64,40 @@ public class Comparateur {
 
 	public void setBiens(List<Bien> biens) {
 		this.biens = biens;
+	}
+	
+	public static int getOneContratRef() throws SQLException {
+		DAOContrat daoContrat = DAOContrat.getInstance();
+		int res = daoContrat.getNumContratDispo();
+		return res;
+		
+	}
+	
+	public static int getOneNumBien() throws SQLException {
+		DAOBien daoBien = DAOBien.getInstance();
+		int res = daoBien.getNumBienDispo();
+		return res;
+		
+	}
+	
+	public static void AddBienToBD(Bien bien) throws SQLException {
+		DAOBien daoBien = DAOBien.getInstance();
+		daoBien.insert(bien);
+	}
+	
+	public static void deletePieceToBD(Piece piece) throws SQLException {
+		DAOPiece daoPiece = DAOPiece.getInstance();
+		daoPiece.delete(piece);
+	}
+	
+	public static void deleteBienToBD(Bien bien) throws SQLException {
+		DAOBien daoBien = DAOBien.getInstance();
+		daoBien.delete(bien);
+	}
+	
+	public static void updateBienToBD(Bien bien) throws SQLException {
+		DAOBien daoBien = DAOBien.getInstance();
+		daoBien.update(bien);
 	}
 	
 	

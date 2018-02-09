@@ -19,7 +19,7 @@ public abstract class Bien {
 	private int typeTn;
 	private String parking;
 	private String text;
-	
+	private int surfaceJardin;
 	private Contrat contrat;
 	private List<Piece> pieces;
 	private int valeurDeProximite;
@@ -39,7 +39,7 @@ public abstract class Bien {
 		valeurDeProximite = 0;
 	}
 	
-	public boolean AddPiece(String fonction, int surface) {
+	public boolean addPiece(String fonction, int surface) {
 		Boolean res = false;
 		Piece piece = fabriquePiece.creerPiece(fonction, surface, this);
 		if(piece != null) { // si création valide alors l'ajouter au bien
@@ -51,6 +51,7 @@ public abstract class Bien {
 			}
 			else if(piece instanceof Jardin) {
 				jardin = true;
+				surfaceJardin = piece.getSurface();
 			}
 			
 			VerifAjoutSpecifique(piece);
@@ -58,6 +59,28 @@ public abstract class Bien {
 			res = this.pieces.add(piece);
 		}
 		
+		return res;
+	}
+	
+	public boolean supPiece(int numPiece) {
+		Boolean res = false;
+		
+		for(Piece piece : pieces) {
+			if(piece.getNumPiece() == numPiece) {
+				if(piece instanceof PieceInterieur) {
+					nbPiece = nbPiece - 1;
+				}
+				if(piece instanceof Chambre) {
+					nbChambre = nbChambre - 1;
+				}
+				else if(piece instanceof Jardin) {
+					jardin = false;
+					surfaceJardin = 0;
+				}
+				pieces.remove(piece);
+				res = true;
+			}
+		}	
 		return res;
 	}
 	
@@ -69,7 +92,7 @@ public abstract class Bien {
 		i = i + evaluerParking(criteres.getParcking());
 		i = i + evaluerConsoEnergie(criteres.getConsoEnergie());
 		if(criteres.isJardin()) {
-			i = i + evaluerJardin(criteres.isJardin());
+			i = i + evaluerJardin(criteres.getSurfaceMinJardin(), criteres.getSurfaceMaxJardin());
 		}
 		
 		valeurDeProximite = i;
@@ -129,13 +152,26 @@ public abstract class Bien {
 	}
 	
 	public int evaluerConsoEnergie(String critereConsoEnergie) {
-		//TODO
-		return 0;
+		int res = 0;
+		
+		if(critereConsoEnergie.equals(consoEnergie)) {
+			res = 2;
+		}
+		else if(ConstanteVar.hashMapConso.get(critereConsoEnergie) + 1 == ConstanteVar.hashMapConso.get(consoEnergie)) {
+			res = 1;
+		}
+		
+		return res;
 	}
 	
-	public int evaluerJardin(boolean critereJardin) {
-		//TODO
-		return 0;
+	public int evaluerJardin(int surfaceMin, int surfaceMax) {
+		int res = 1;
+		
+		if(surfaceJardin >= surfaceMin && surfaceJardin <= surfaceMax) {
+			res = res + 1;
+		}
+		
+		return res;
 	}
 	
 	public abstract void VerifAjoutSpecifique(Piece piece) ;
@@ -241,13 +277,37 @@ public abstract class Bien {
 		return pieces;
 	}
 
-	public void setPiece(List<Piece> piece) {
-		this.pieces = piece;
+	public void setPiece(List<Piece> pieces) {
+		nbPiece = 0;
+		nbChambre = 0;
+		for(Piece tmp : pieces) {
+				if(tmp instanceof PieceInterieur) {
+					nbPiece = nbPiece + 1;
+				}
+				if(tmp instanceof Chambre) {
+					nbChambre = nbChambre + 1;
+				}
+				else if(tmp instanceof Jardin) {
+					jardin = true;
+					surfaceJardin = tmp.getSurface();
+				}
+				VerifAjoutSpecifique(tmp);
+		}
+		this.pieces = pieces;
 	}
 	
 	public String getTypeContrat() {
 		return contrat.getType();
 	}
+	
+	public int getSurfaceJardin() {
+		return surfaceJardin;
+	}
+
+	public void setSurfaceJardin(int surfaceJardin) {
+		this.surfaceJardin = surfaceJardin;
+	}
+
 	
 	public String toString() {
 		return "BIEN		NumBien : " + numBien + " ,Type : " + getType() + ", Surface : " + surface +" ,Localisation : "

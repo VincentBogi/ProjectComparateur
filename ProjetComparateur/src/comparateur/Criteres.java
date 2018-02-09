@@ -140,6 +140,16 @@ public class Criteres {
 	public void setParcking(String parcking) {
 		this.parcking = parcking;
 	}
+
+	public int getSurfaceMinJardin() {
+		return surfaceMinJardin;
+	}
+
+	public int getSurfaceMaxJardin() {
+		return surfaceMaxJardin;
+	}
+
+	
 	
 	
 }

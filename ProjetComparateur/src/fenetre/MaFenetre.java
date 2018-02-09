@@ -20,7 +20,7 @@ public class MaFenetre extends JFrame {
 	public MaFenetre() {
 		super();
 		barreMenu = new BarreMenu(this);
-		panneauCritere = new PanneauCritere(this);
+		panneauCritere = new PanneauCritere(this, 1);
 		setTitle("ImmoComp");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -33,8 +33,8 @@ public class MaFenetre extends JFrame {
 		int largeur = (dim.width / 3) * 2;
 		int hauteur = (dim.height / 3) * 3;
 		Dimension dimFenetre = new Dimension(largeur, hauteur); 
-		setSize(dimFenetre);
-		setLocationRelativeTo(null);
+		setSize(new Dimension(dim.width, dim.height));
+
 		
 		panneauActif = panneauCritere;
 		
@@ -45,6 +45,8 @@ public class MaFenetre extends JFrame {
 		// ajoute élément 
 		this.getContentPane().add(barreMenu, BorderLayout.NORTH);
 		this.getContentPane().add(panneauActif, BorderLayout.CENTER);
+		this.pack();
+		this.setExtendedState(this.MAXIMIZED_BOTH);
 	}
 
 	public JPanel getPanneauActif() {
@@ -55,8 +57,10 @@ public class MaFenetre extends JFrame {
 		remove(panneauActif);
 		panneauActif = jpanel;
 		add(jpanel, BorderLayout.CENTER);
+		revalidate();
 		repaint(); 
 		pack();
+		this.setExtendedState(this.MAXIMIZED_BOTH);
 	}
 
 	public PanneauCritere getPanneauCritere() {

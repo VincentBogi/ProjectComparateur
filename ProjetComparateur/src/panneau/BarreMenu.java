@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,7 +32,6 @@ public class BarreMenu extends JPanel{
 		super();
 		setBackground(ConstanteColor.colorBarreMenu);
 		this.maFenetre = maFenetre;
-		//GridLayout gridLayou = new GridLa
 		
 		setLayout (new GridBagLayout ());
 		GridBagConstraints c = new GridBagConstraints ();
@@ -45,6 +46,28 @@ public class BarreMenu extends JPanel{
 		recherche = new MonBoutonMenu("Recherche");
 		modification = new MonBoutonMenu("Modification");
 		connexion = new MonBoutonMenu("Connexion");
+		
+		recherche.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				PanneauCritere panneau = new PanneauCritere(maFenetre, 1);
+				panneau.initPanneauCritere();
+				maFenetre.setPanneauActif(panneau);
+				
+			}
+		});
+		
+		modification.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				PanneauCritere panneau = new PanneauCritere(maFenetre, 2);
+				panneau.initPanneauCritere();
+				maFenetre.setPanneauActif(panneau);
+				
+			}
+		});
 	}
 	
 	public void initBarreMenu(Dimension dim) {
@@ -80,10 +103,6 @@ public class BarreMenu extends JPanel{
 		//init dim bouton
 		int x = 200;
 		int y = dim.height;
-		System.out.println(paneGauche.getHeight());
-		System.out.println(paneGauche.getWidth());
-		System.out.println(dim.getHeight());
-		System.out.println();
 		
 		recherche.setPreferredSize(new Dimension(x, y));
 		recherche.setBorderPainted(true);

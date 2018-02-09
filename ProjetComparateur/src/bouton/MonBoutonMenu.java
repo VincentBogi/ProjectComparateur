@@ -1,5 +1,7 @@
 package bouton;
 
+import java.awt.Font;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -10,7 +12,8 @@ public class MonBoutonMenu extends JButton{
 		super(nom);
 		setBackground(ConstanteColor.colorBarreMenu);
 		setForeground(ConstanteColor.colorFontMenu);
-		
+		Font font = new Font("Arial",Font.PLAIN,18);
+		setFont(font);
 		setFocusPainted(false); 
 		setMargin(null);            
 		setBorder(BorderFactory.createEmptyBorder()); 

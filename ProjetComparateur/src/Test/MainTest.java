@@ -151,11 +151,16 @@ public class MainTest {
 		criteres.setParcking(ConstanteVar.parkingPublicSurveiller);
 		
 		Comparateur comparateur = new Comparateur(criteres);
-		comparateur.comparer();*/
+		int res = comparateur.getOneContratRef();
+		System.out.println(res);*/
 		
 		MaFenetre fenetre = new MaFenetre();
 		fenetre.initFenetre();
 		fenetre.setVisible(true);
+		
+		/*DAOContrat C = DAOContrat.getInstance();
+		int r = C.getNumContratMax();
+		System.out.println(r);*/
 	}
 	
 }
